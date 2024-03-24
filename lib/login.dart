@@ -3,6 +3,9 @@ import 'package:yatra/main.dart';
 import 'package:yatra/password.dart';
 import 'style.dart';
 import 'bottombar/bottomicon.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'auth.dart';
+
 
 class MyLogin extends StatefulWidget {
   const MyLogin({super.key});
