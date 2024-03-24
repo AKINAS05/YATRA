@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:yatra/login.dart';
 import 'main.dart';
+import 'auth.dart';
 
 class MyRegister extends StatefulWidget {
   const MyRegister({super.key});
@@ -10,6 +11,12 @@ class MyRegister extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyRegister> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  final Auth _auth = Auth();
   @override
   Widget build(BuildContext context) {
     var mediaQuery1 = MediaQuery.of(context);
@@ -36,6 +43,7 @@ class _MyHomePageState extends State<MyRegister> {
                     child:  Column(
                       children: [
                         TextField(
+                          controller: _nameController,
                           decoration: InputDecoration(
                               fillColor: Colors.grey.shade300,
                               filled: true,
@@ -47,6 +55,7 @@ class _MyHomePageState extends State<MyRegister> {
                         ),
                         const SizedBox(height: 19,),
                         TextField(
+                          controller: _emailController,
                           decoration: InputDecoration(
                               fillColor: Colors.grey.shade300,
                               filled: true,
@@ -58,6 +67,7 @@ class _MyHomePageState extends State<MyRegister> {
                         ),
                         const SizedBox(height: 19,),
                         TextField(
+                          controller: _usernameController,
                           decoration: InputDecoration(
                               fillColor: Colors.grey.shade300,
                               filled: true,
@@ -69,6 +79,7 @@ class _MyHomePageState extends State<MyRegister> {
                         ),
                         const SizedBox(height: 19,),
                         TextField(
+                          controller: _passwordController,
                           obscureText: true,
                           decoration: InputDecoration(
                               fillColor: Colors.grey.shade300,
@@ -80,20 +91,31 @@ class _MyHomePageState extends State<MyRegister> {
                           ),
                         ),
                         SizedBox(height: 40,),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text('Sign Up' , style: TextStyle(color: Colors.white,fontSize: 25)),
-                              SizedBox( height: mediaQuery1.size.height*0.003),
-                              CircleAvatar(
-                                radius: 30,
-                                backgroundColor: Color(0xff4c505b),
-                                child: IconButton(onPressed: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) {  return MyLogin ();} ,));
-                                } , icon: const Icon(Icons.arrow_forward),
+                        ElevatedButton(
+                          onPressed: () async {
+                            try {
+                              await _auth.createUserWithEmailAndPassword(
+                                name: _nameController.text,
+                                email: _emailController.text,
+                                username: _usernameController.text,
+                                password: _passwordController.text,
+
+                              );
+                              // Navigate to the login screen upon successful registration
+                              // Replace '/login' with the actual route in your app
+                              Navigator.push(context, MaterialPageRoute(builder: (context) {  return MyLogin();} ,));
+                            } catch (e) {
+                              // Handle registration errors
+                              print('Failed to register: $e');
+                              // Show error message to the user
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Failed to register: $e'),
                                 ),
-                              ),
-                            ]
+                              );
+                            }
+                          },
+                          child: Text('Register'),
                         ),
 
                       ],

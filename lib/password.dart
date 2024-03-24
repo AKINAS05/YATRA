@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'login.dart';
+import 'auth.dart';
 
 class MyPassword extends StatefulWidget {
   const MyPassword({super.key});
@@ -10,6 +11,12 @@ class MyPassword extends StatefulWidget {
 }
 
 class _MyPasswordState extends State<MyPassword> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+
+  final Auth _auth = Auth();
+
   @override
   Widget build(BuildContext context) {
     var mediaQuery1 = MediaQuery.of(context);
@@ -36,10 +43,11 @@ class _MyPasswordState extends State<MyPassword> {
                     child:  Column(
                       children: [
                         TextField(
+                          controller: _emailController,
                           decoration: InputDecoration(
                               fillColor: Colors.grey.shade300,
                               filled: true,
-                              hintText: 'Username' ,
+                              hintText: 'Email' ,
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10)
                               )
@@ -47,6 +55,7 @@ class _MyPasswordState extends State<MyPassword> {
                         ),
                         const SizedBox(height: 19,),
                         TextField(
+                          controller: _passwordController,
                           obscureText: true,
                           decoration: InputDecoration(
                               fillColor: Colors.grey.shade300,
@@ -59,6 +68,7 @@ class _MyPasswordState extends State<MyPassword> {
                         ),
                         SizedBox(height: 19,),
                         TextField(
+                          controller: _confirmPasswordController,
                           obscureText: true,
                           decoration: InputDecoration(
                               fillColor: Colors.grey.shade300,
@@ -72,21 +82,39 @@ class _MyPasswordState extends State<MyPassword> {
                         ),
                        SizedBox(height: 25,),
                         //SizedBox( height: mediaQuery1.size.height*0.003),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      //const Text('Sign Up' , style: TextStyle(color: Colors.white,fontSize: 25)),
-                      SizedBox( height: mediaQuery1.size.height*0.003),
-                      CircleAvatar(
-                        radius: 30,
-                        backgroundColor: Color(0xff4c505b),
-                        child: IconButton(onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) {  return MyLogin ();} ,));
-                        } , icon: const Icon(Icons.arrow_forward),
+                        ElevatedButton(
+                          onPressed: () async {
+                            String email = _emailController.text;
+                            String password = _passwordController.text;
+                            String confirmPassword = _confirmPasswordController.text;
+
+                            if (password != confirmPassword) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Passwords do not match'),
+                                ),
+                              );
+                              return;
+                            }
+
+                            try {
+                              await _auth.resetPassword(email: email, newPassword: password);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Password reset email sent'),
+                                ),
+                              );
+                            } catch (e) {
+                              print('Failed to reset password: $e');
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Failed to reset password: $e'),
+                                ),
+                              );
+                            }
+                          },
+                          child: Text('Reset Password'),
                         ),
-                      ),
-                      ],
-                    ),
                    ],
                     ),
                   ),

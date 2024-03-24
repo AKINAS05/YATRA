@@ -14,15 +14,27 @@ class Auth {
     );
   }
   Future<void> createUserWithEmailAndPassword({
+    required String name,
     required String email,
+    required String username,
     required String password,
   }) async {
-    await _firebaseAuth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password);
+
   }
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
+  }
+  Future<void> resetPassword({
+    required String email,
+    required String newPassword,
+  }) async {
+    await _firebaseAuth.sendPasswordResetEmail(email: email);
+    await _firebaseAuth.currentUser!.updatePassword(newPassword);
+  }
+  bool isUserSignedIn() {
+    return _firebaseAuth.currentUser != null;
   }
 }
