@@ -21,6 +21,7 @@ import 'iconscreens/placepage.dart';
 import 'profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'auth.dart';
+import 'widget_tree.dart';
 
 
 void main() async
@@ -30,18 +31,18 @@ void main() async
 );
 
   runApp(
-  MaterialApp(
-    debugShowCheckedModeBanner: false,
+      MaterialApp(
+        debugShowCheckedModeBanner: false,
+        routes: {
+          "/": (context) => SplashScreen(),
+          "SplashScreen": (context) => MyLogin(),
+          'Logo': (context) => const LogoPage(),
+          'Login': (context) => const MyLogin(),
+          'register': (context) => MyRegister()
+        },
+      ),
 
-    routes: {
-      "/": (context) => SplashScreen(),
-      "SplashScreen": (context) => MyLogin(),
-      'Logo' : (context) => const LogoPage(),
-      'Login' : (context) => const MyLogin(),
-      'register' : (context) => MyRegister()
-    },
-  )
-);
+  );
 }
 class MyApp extends StatelessWidget{
   const MyApp({Key?key}) :super(key: key);

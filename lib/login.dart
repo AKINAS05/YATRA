@@ -16,7 +16,11 @@ class MyLogin extends StatefulWidget {
 
 class _MyLoginState extends State<MyLogin> {
   get onPressed => null;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
+  // Create an instance of your Auth class
+  final Auth _auth = Auth();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -42,6 +46,7 @@ class _MyLoginState extends State<MyLogin> {
                     child:  Column(
                       children: [
                         TextField(
+                          controller: _emailController,
                           decoration: InputDecoration(
                             fillColor: Colors.grey.shade300,
                             filled: true,
@@ -53,6 +58,7 @@ class _MyLoginState extends State<MyLogin> {
                         ),
                         const SizedBox(height: 19,),
                         TextField(
+                          controller: _passwordController,
                           obscureText: true,
                           decoration: InputDecoration(
                               fillColor: Colors.grey.shade300,
@@ -64,20 +70,29 @@ class _MyLoginState extends State<MyLogin> {
                           ),
                         ),
                         SizedBox(height: 40,),
-                         Row(
-                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Sign in' , style: styles.headlineStyle3.copyWith(color: Color(0xff4c505b)),),
-                             CircleAvatar(
-                              radius: 30,
-                              backgroundColor: Color(0xff4c505b),
-                              child: IconButton(onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) {  return MyHomePage ();} ,));
 
-                              } , icon: Icon(Icons.arrow_forward),
-                            ),
-                             ),
-                  ]
+                        ElevatedButton(
+                          onPressed: () async {
+                            try {
+                              await _auth.signInWithEmailAndPassword(
+                                email: _emailController.text,
+                                password: _passwordController.text,
+                              );
+                              // Navigate to the next screen upon successful login
+                              // Replace '/home' with the actual route in your app
+                              Navigator.push(context, MaterialPageRoute(builder: (context) {  return MyHomePage();} ,));
+                            } catch (e) {
+                              // Handle login errors
+                              print('Failed to sign in: $e');
+                              // Show error message to the user
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Failed to sign in: $e'),
+                                ),
+                              );
+                            }
+                          },
+                          child: Text('Sign In'),
                         ),
                         Row(
                           children: [
